@@ -1,5 +1,4 @@
-// TODO: Change the package
-package com.why.template.compose.view
+package com.why.githubtrendyrepos.view
 
 import android.content.Intent
 import android.os.Bundle
