@@ -32,7 +32,7 @@ private fun getAppropriateColors(darkTheme: Boolean) = when {
 }
 
 @Composable
-fun TemplateTheme(
+fun MyTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
