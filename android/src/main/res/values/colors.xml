@@ -2,7 +2,7 @@
 <resources>
     <color name="blue_600">#019FDE</color>
 
-    <color name="colorPrimaryDark">#0071ac</color>
+    <color name="colorPrimaryDark">#005b96</color>
     <color name="colorAccent">#D81B60</color>
     <color name="black">#000000</color>
     <color name="color_bottomnav_background">#f7f6f6</color>
