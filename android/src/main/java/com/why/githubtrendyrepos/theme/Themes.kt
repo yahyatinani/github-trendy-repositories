@@ -8,19 +8,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColors = lightColors(
-    primary = Blue600,
+    primary = Grey100,
     primaryVariant = Blue900,
-    onPrimary = Color.White,
+    onPrimary = Color.Black,
     secondary = Blue600,
     secondaryVariant = Blue900,
     onSecondary = Color.White,
+//    onSurface = Color.Red,
     error = Red800
 )
 
 private val DarkColors = darkColors(
     primary = Blue300,
     primaryVariant = Blue600,
-    onPrimary = Color.Black,
+    onPrimary = Color.White,
     secondary = Blue300,
     onSecondary = Color.White,
     error = Red200
@@ -43,3 +44,13 @@ fun MyTheme(
         content = content
     )
 }
+
+val greyLightColors = LightColors.copy(
+    primary = Grey100,
+    onPrimary = Grey900,
+)
+
+val greyDarkColors = DarkColors.copy(
+    primary = Grey100,
+    onPrimary = Grey900,
+)

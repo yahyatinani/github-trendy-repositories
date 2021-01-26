@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GitHub Trendy Repos</string>
+    <string name="app_title">Trending Repos</string>
 </resources>

@@ -8,23 +8,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.why.githubtrendyrepos.theme.MyTheme
+import com.why.template.compose.R
 
 private const val placeholderDescriptionText = "It does a lot of cool stuff, " +
     "try it!! It does a lot of cool stuff, try it!! It does a lot of cool " +
@@ -58,13 +73,13 @@ private fun ImageText(
 
 @Composable
 fun RepoItem() {
+    val typography = MaterialTheme.typography
+
     Surface {
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp, horizontal = 16.dp)
         ) {
-            val typography = MaterialTheme.typography
-
             Text(text = "example-api-name", style = typography.subtitle1)
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -101,6 +116,97 @@ fun RepoItem() {
 }
 
 @Composable
+fun TopBar(type: Typography) {
+    Column {
+        TopAppBar(
+            elevation = 1.dp,
+            title = {
+                Text(
+                    text = stringResource(R.string.app_title),
+                    style = type.h6.merge(
+                        TextStyle(
+                            textAlign = TextAlign.Center,
+                            fontSize = 17.sp,
+                        )
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        )
+        Divider(modifier = Modifier.fillMaxWidth())
+    }
+}
+
+private fun toImageVector(item: BottomBarItem) =
+    when (item.status) {
+        BottomBarItems.TRENDING -> Icons.Filled.Star
+        BottomBarItems.SETTINGS -> Icons.Filled.Settings
+    }
+
+@Composable
+fun BottomBar(navigationItems: List<BottomBarItem>) {
+    val colors = MaterialTheme.colors
+    val allItemsStates = mutableListOf<MutableState<Boolean>>()
+
+    Column {
+        Divider(modifier = Modifier.fillMaxWidth())
+        BottomNavigation(elevation = 1.dp) {
+            navigationItems.forEach { item ->
+                val itemState = remember { mutableStateOf(item.isSelected) }
+                allItemsStates.add(itemState)
+
+                BottomNavigationItem(
+                    selectedContentColor = colors.secondary,
+                    unselectedContentColor = colors.onPrimary.copy(
+                        alpha = ContentAlpha.medium
+                    ),
+                    label = {
+                        Text(text = item.label)
+                    },
+                    icon = {
+                        Icon(imageVector = toImageVector(item))
+                    },
+                    selected = itemState.value,
+                    onClick = {
+                        if (!itemState.value) {
+                            allItemsStates.forEach { it.value = false }
+                            itemState.value = true
+                            //TODO: Change content of the screen
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+enum class BottomBarItems {
+    TRENDING,
+    SETTINGS
+}
+
+data class BottomBarItem(
+    val label: String,
+    val status: BottomBarItems,
+    val isSelected: Boolean = false
+)
+
+@Composable
+fun Screen() {
+    val type = MaterialTheme.typography
+
+    val items = listOf(
+        BottomBarItem("Trending", BottomBarItems.TRENDING, true),
+        BottomBarItem("Settings", BottomBarItems.SETTINGS),
+    )
+
+    Scaffold(
+        topBar = { TopBar(type) },
+        bottomBar = { BottomBar(items) }
+    ) {}
+}
+
+@Composable
 @Preview(showBackground = true, name = "Repo Item")
 fun RepoItemPreview() {
     MyTheme {
@@ -117,7 +223,17 @@ fun RepoItemDarkPreview() {
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun TrendyReposPreview() {
-    MyTheme {}
+    MyTheme {
+        Screen()
+    }
+}
+
+@Composable
+@Preview(showBackground = true, name = "Trendy Repos - Dark theme")
+fun TrendyReposDarkPreview() {
+    MyTheme(isDarkTheme = true) {
+        Screen()
+    }
 }
