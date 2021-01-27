@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(Libs.AndroidX.activityKtx)
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.appcompat)
     implementation(Libs.AndroidX.lifecycle)
