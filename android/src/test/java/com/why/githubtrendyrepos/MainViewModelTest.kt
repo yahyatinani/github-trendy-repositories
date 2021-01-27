@@ -2,7 +2,7 @@ package com.why.githubtrendyrepos
 
 import androidx.lifecycle.ViewModel
 import com.github.whyrising.y.concretions.map.m
-import com.why.githubtrendyrepos.viewmodels.NavigationBarViewModel
+import com.why.githubtrendyrepos.viewmodels.MainViewModel
 import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
@@ -12,7 +12,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.reflection.shouldBeSubtypeOf
 import io.kotest.matchers.shouldBe
 
-class NavigationBarViewModelTest : FreeSpec(
+class MainViewModelTest : FreeSpec(
     {
         "ctor" {
             val item = NavigationItemViewModel(TRENDING, true) { }
@@ -20,7 +20,7 @@ class NavigationBarViewModelTest : FreeSpec(
                 TRENDING to item,
                 SETTINGS to NavigationItemViewModel(SETTINGS) {}
             )
-            val vm = NavigationBarViewModel()
+            val vm = MainViewModel()
 
             vm::class.shouldBeSubtypeOf<ViewModel>()
             vm.navigationItems shouldBe defaultItems
@@ -29,7 +29,7 @@ class NavigationBarViewModelTest : FreeSpec(
         }
 
         "select(navigationItem) should select() the navigationItem passed" {
-            val navigationBarVm = NavigationBarViewModel()
+            val navigationBarVm = MainViewModel()
             val toBeSelectedItem = navigationBarVm.navigationItems(SETTINGS)!!
             val oldSelectedItem = navigationBarVm.currentlySelectedItem!!
 
@@ -40,7 +40,7 @@ class NavigationBarViewModelTest : FreeSpec(
         }
 
         "defaultItems should be wired with select()" {
-            val navigationBarVm = NavigationBarViewModel()
+            val navigationBarVm = MainViewModel()
             val toBeSelectedItem = navigationBarVm.navigationItems(SETTINGS)!!
             val oldSelectedItem = navigationBarVm.currentlySelectedItem!!
 

@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.why.githubtrendyrepos.theme.MyTheme
-import com.why.githubtrendyrepos.viewmodels.NavigationBarViewModel
+import com.why.githubtrendyrepos.viewmodels.MainViewModel
 import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
 import com.why.githubtrendyrepos.viewmodels.Pages
 import com.why.template.compose.R
@@ -185,11 +185,11 @@ private fun NavigationItem(navigationItemVm: NavigationItemViewModel) {
 }
 
 @Composable
-fun BottomBar(navigationBarVm: NavigationBarViewModel) {
+fun BottomBar(mainVm: MainViewModel) {
     Column {
         Divider(modifier = Modifier.fillMaxWidth())
         BottomNavigation(elevation = 1.dp) {
-            navigationBarVm.navigationItems
+            mainVm.navigationItems
                 .forEach<Pages, NavigationItemViewModel> { entry ->
                     NavigationItem(entry.value)
                 }
@@ -232,13 +232,13 @@ fun Repos(innerPadding: PaddingValues) {
 }
 
 @Composable
-fun Screen(navigationBarVm: NavigationBarViewModel) {
+fun Screen(mainVm: MainViewModel) {
     Scaffold(
         topBar = {
             TopBar()
         },
         bottomBar = {
-            BottomBar(navigationBarVm)
+            BottomBar(mainVm)
         }
     ) { innerPadding: PaddingValues ->
         Repos(innerPadding)
@@ -289,7 +289,7 @@ fun SettingsDarkPreview() {
 @Preview(showBackground = true)
 fun TrendyReposPreview() {
     MyTheme {
-        Screen(NavigationBarViewModel())
+        Screen(MainViewModel())
     }
 }
 
@@ -297,6 +297,6 @@ fun TrendyReposPreview() {
 @Preview(showBackground = true, name = "Trendy Repos - Dark theme")
 fun TrendyReposDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        Screen(NavigationBarViewModel())
+        Screen(MainViewModel())
     }
 }
