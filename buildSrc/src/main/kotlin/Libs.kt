@@ -1,6 +1,6 @@
 object Libs {
     const val kotlinVersion = "1.4.21"
-    const val jvmTarget = "1.8"
+    const val jvmTarget = "11"
 
     object Gradle {
         const val plugin =
