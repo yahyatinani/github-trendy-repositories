@@ -26,10 +26,6 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -45,6 +41,8 @@ import com.why.githubtrendyrepos.theme.MyTheme
 import com.why.githubtrendyrepos.viewmodels.MainViewModel
 import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
 import com.why.githubtrendyrepos.viewmodels.Pages
+import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
+import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import com.why.template.compose.R
 
 private const val placeholderDescriptionText = "It does a lot of cool stuff, " +
@@ -123,18 +121,20 @@ fun RepoItem() {
 }
 
 @Composable
-fun TopBar() {
-    val type = MaterialTheme.typography
-    val stringResource = stringResource(R.string.app_title)
-    var title by remember { mutableStateOf(stringResource) }
+private fun topBarTitle(mainViewModel: MainViewModel) =
+    when (mainViewModel.currentlySelectedPage) {
+        TRENDING -> stringResource(R.string.top_bar_trending_title)
+        SETTINGS -> stringResource(R.string.top_bar_settings_title)
+    }
 
+@Composable
+fun TopBar(mainViewModel: MainViewModel) {
     Column {
         TopAppBar(
-            elevation = 1.dp,
             title = {
                 Text(
-                    text = title,
-                    style = type.h6.merge(
+                    text = topBarTitle(mainViewModel),
+                    style = MaterialTheme.typography.h6.merge(
                         TextStyle(
                             textAlign = TextAlign.Center,
                             fontSize = 17.sp,
@@ -142,7 +142,8 @@ fun TopBar() {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
+            },
+            elevation = 1.dp
         )
         Divider(modifier = Modifier.fillMaxWidth())
     }
@@ -151,11 +152,11 @@ fun TopBar() {
 @Composable
 private fun toImageVector(page: Pages): Pair<String, ImageVector> =
     when (page) {
-        Pages.TRENDING -> Pair(
+        TRENDING -> Pair(
             stringResource(id = R.string.bottom_bar_trending),
             Icons.Filled.Star
         )
-        Pages.SETTINGS -> Pair(
+        SETTINGS -> Pair(
             stringResource(id = R.string.bottom_bar_trending),
             Icons.Filled.Settings
         )
@@ -232,16 +233,19 @@ fun Repos(innerPadding: PaddingValues) {
 }
 
 @Composable
-fun Screen(mainVm: MainViewModel) {
+fun Screen(mainViewModel: MainViewModel) {
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(mainViewModel)
         },
         bottomBar = {
-            BottomBar(mainVm)
+            BottomBar(mainViewModel)
         }
     ) { innerPadding: PaddingValues ->
-        Repos(innerPadding)
+        when (mainViewModel.currentlySelectedPage) {
+            TRENDING -> Repos(innerPadding)
+            SETTINGS -> Settings()
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GitHub Trendy Repos</string>
-    <string name="app_title">Trending Repos</string>
+    <string name="top_bar_trending_title">Trending Repos</string>
+    <string name="top_bar_settings_title">Settings</string>
     <string name="bottom_bar_trending">Trending</string>
     <string name="bottom_bar_settings">Settings</string>
 </resources>

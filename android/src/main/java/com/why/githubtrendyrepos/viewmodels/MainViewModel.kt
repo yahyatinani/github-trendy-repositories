@@ -1,5 +1,8 @@
 package com.why.githubtrendyrepos.viewmodels
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.github.whyrising.y.concretions.map.m
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
@@ -14,7 +17,7 @@ class MainViewModel : ViewModel() {
 
     val navigationItems = defaultItems()
 
-    var currentlySelectedPage: Pages = TRENDING
+    var currentlySelectedPage: Pages by mutableStateOf(TRENDING)
         private set
 
     fun onSelect(navigationItem: NavigationItemViewModel) {
