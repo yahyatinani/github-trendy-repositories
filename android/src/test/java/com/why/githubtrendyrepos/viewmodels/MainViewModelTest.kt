@@ -1,9 +1,7 @@
-package com.why.githubtrendyrepos
+package com.why.githubtrendyrepos.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.github.whyrising.y.concretions.map.m
-import com.why.githubtrendyrepos.viewmodels.MainViewModel
-import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import io.kotest.core.spec.style.FreeSpec

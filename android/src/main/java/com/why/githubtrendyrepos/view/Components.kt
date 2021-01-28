@@ -215,7 +215,8 @@ fun Settings(vm: MainViewModel) {
                             vm.isDarkTheme -> vm.darkThemeOff()
                             else -> vm.darkThemeOn()
                         }
-                    })
+                    }
+                )
             }
         }
     }

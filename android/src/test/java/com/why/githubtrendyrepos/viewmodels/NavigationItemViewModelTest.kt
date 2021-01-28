@@ -1,8 +1,6 @@
-package com.why.githubtrendyrepos
+package com.why.githubtrendyrepos.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
-import com.why.githubtrendyrepos.viewmodels.Pages
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -10,7 +8,8 @@ import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.reflection.shouldBeSubtypeOf
 import io.kotest.matchers.shouldBe
 
-class NavigationItemViewModelTest : FreeSpec(
+class
+NavigationItemViewModelTest : FreeSpec(
     {
         "ctor" {
             val vm = NavigationItemViewModel(Pages.SETTINGS, true) {}
