@@ -7,13 +7,16 @@ data class RepoViewModel(
     val starsCount: Int,
     val repoImageLink: String,
 ) {
+
+    private lateinit var _starsCountCache: String
+
     private fun formatAsOneDigitDecimal(f: Float): String {
         val s = f.toString()
         val i = s.indexOf(".")
         return "${s.substring(0, i + 2)}k"
     }
 
-    fun formatStarsCount(): String = when {
+    private fun formatStarsCount() = when {
         starsCount < 1000 -> starsCount.toString()
         starsCount % 1000 == 0 -> "${starsCount / 1000}k"
         else -> {
@@ -36,4 +39,12 @@ data class RepoViewModel(
             }
         }
     }
+
+    val starsCountStr: String
+        get() {
+            if (!::_starsCountCache.isInitialized)
+                _starsCountCache = formatStarsCount()
+
+            return _starsCountCache
+        }
 }
