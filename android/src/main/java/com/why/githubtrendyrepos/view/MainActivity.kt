@@ -14,9 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MyTheme {
-                Screen(mainViewModel)
-            }
+            Screen(mainViewModel)
         }
     }
 }

@@ -199,7 +199,7 @@ fun BottomBar(mainVm: MainViewModel) {
 }
 
 @Composable
-fun Settings() {
+fun Settings(vm: MainViewModel) {
     Surface {
         Column(
             modifier = Modifier
@@ -208,7 +208,14 @@ fun Settings() {
         ) {
             Row {
                 Text(text = "Dark theme", modifier = Modifier.weight(1f))
-                Switch(checked = false, onCheckedChange = { /*TODO*/ })
+                Switch(
+                    checked = vm.isDarkTheme,
+                    onCheckedChange = {
+                        when {
+                            vm.isDarkTheme -> vm.darkThemeOff()
+                            else -> vm.darkThemeOn()
+                        }
+                    })
             }
         }
     }
@@ -234,17 +241,19 @@ fun Repos(innerPadding: PaddingValues) {
 
 @Composable
 fun Screen(mainViewModel: MainViewModel) {
-    Scaffold(
-        topBar = {
-            TopBar(mainViewModel)
-        },
-        bottomBar = {
-            BottomBar(mainViewModel)
-        }
-    ) { innerPadding: PaddingValues ->
-        when (mainViewModel.currentlySelectedPage) {
-            TRENDING -> Repos(innerPadding)
-            SETTINGS -> Settings()
+    MyTheme(isDarkTheme = mainViewModel.isDarkTheme) {
+        Scaffold(
+            topBar = {
+                TopBar(mainViewModel)
+            },
+            bottomBar = {
+                BottomBar(mainViewModel)
+            }
+        ) { innerPadding: PaddingValues ->
+            when (mainViewModel.currentlySelectedPage) {
+                TRENDING -> Repos(innerPadding)
+                SETTINGS -> Settings(mainViewModel)
+            }
         }
     }
 }
@@ -277,7 +286,7 @@ fun RepoItemDarkPreview() {
 @Preview(showBackground = true)
 fun SettingsPreview() {
     MyTheme {
-        Settings()
+        Settings(MainViewModel())
     }
 }
 
@@ -285,7 +294,7 @@ fun SettingsPreview() {
 @Preview(showBackground = true)
 fun SettingsDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        Settings()
+        Settings(MainViewModel())
     }
 }
 

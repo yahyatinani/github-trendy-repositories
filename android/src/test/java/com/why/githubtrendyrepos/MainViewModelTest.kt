@@ -24,6 +24,7 @@ class MainViewModelTest : FreeSpec(
             val oldSelectedPage = vm.currentlySelectedPage
 
             vm::class.shouldBeSubtypeOf<ViewModel>()
+            vm.isDarkTheme.shouldBeFalse()
             vm.navigationItems shouldBe defaultItems
             oldSelectedPage shouldBe TRENDING
             vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeTrue()
@@ -49,6 +50,22 @@ class MainViewModelTest : FreeSpec(
 
             vm.currentlySelectedPage shouldBe toBeSelectedItem.page
             vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeFalse()
+        }
+
+        "darkThemeOn()" {
+            val vm = MainViewModel()
+
+            vm.darkThemeOn()
+
+            vm.isDarkTheme.shouldBeTrue()
+        }
+
+        "darkThemeOff()" {
+            val vm = MainViewModel()
+
+            vm.darkThemeOff()
+
+            vm.isDarkTheme.shouldBeFalse()
         }
     }
 )

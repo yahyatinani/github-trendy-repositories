@@ -15,6 +15,9 @@ class MainViewModel : ViewModel() {
         SETTINGS to NavigationItemViewModel(SETTINGS, onSelect = ::onSelect)
     )
 
+    var isDarkTheme: Boolean by mutableStateOf(false)
+        private set
+
     val navigationItems = defaultItems()
 
     var currentlySelectedPage: Pages by mutableStateOf(TRENDING)
@@ -23,5 +26,13 @@ class MainViewModel : ViewModel() {
     fun onSelect(navigationItem: NavigationItemViewModel) {
         navigationItems(currentlySelectedPage)?.deselect()
         currentlySelectedPage = navigationItem.page
+    }
+
+    fun darkThemeOn() {
+        isDarkTheme = true
+    }
+
+    fun darkThemeOff() {
+        isDarkTheme = false
     }
 }
