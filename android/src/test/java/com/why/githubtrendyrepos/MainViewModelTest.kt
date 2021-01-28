@@ -21,33 +21,34 @@ class MainViewModelTest : FreeSpec(
                 SETTINGS to NavigationItemViewModel(SETTINGS) {}
             )
             val vm = MainViewModel()
+            val oldSelectedPage = vm.currentlySelectedPage
 
             vm::class.shouldBeSubtypeOf<ViewModel>()
             vm.navigationItems shouldBe defaultItems
-            vm.currentlySelectedItem shouldBe item
-            vm.currentlySelectedItem!!.isSelected.shouldBeTrue()
+            oldSelectedPage shouldBe TRENDING
+            vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeTrue()
         }
 
         "select(navigationItem) should select() the navigationItem passed" {
-            val navigationBarVm = MainViewModel()
-            val toBeSelectedItem = navigationBarVm.navigationItems(SETTINGS)!!
-            val oldSelectedItem = navigationBarVm.currentlySelectedItem!!
+            val vm = MainViewModel()
+            val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
+            val oldSelectedPage = vm.currentlySelectedPage
 
-            navigationBarVm.onSelect(toBeSelectedItem)
+            vm.onSelect(toBeSelectedItem)
 
-            navigationBarVm.currentlySelectedItem shouldBe toBeSelectedItem
-            oldSelectedItem.isSelected.shouldBeFalse()
+            vm.currentlySelectedPage shouldBe toBeSelectedItem.page
+            vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeFalse()
         }
 
         "defaultItems should be wired with select()" {
-            val navigationBarVm = MainViewModel()
-            val toBeSelectedItem = navigationBarVm.navigationItems(SETTINGS)!!
-            val oldSelectedItem = navigationBarVm.currentlySelectedItem!!
+            val vm = MainViewModel()
+            val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
+            val oldSelectedPage = vm.currentlySelectedPage
 
             toBeSelectedItem.select()
 
-            navigationBarVm.currentlySelectedItem shouldBe toBeSelectedItem
-            oldSelectedItem.isSelected.shouldBeFalse()
+            vm.currentlySelectedPage shouldBe toBeSelectedItem.page
+            vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeFalse()
         }
     }
 )

@@ -8,14 +8,14 @@ import com.why.githubtrendyrepos.theme.MyTheme
 import com.why.githubtrendyrepos.viewmodels.MainViewModel
 
 class MainActivity : ComponentActivity() {
-    private val navigationBarVm by viewModels<MainViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             MyTheme {
-                Screen(navigationBarVm)
+                Screen(mainViewModel)
             }
         }
     }
