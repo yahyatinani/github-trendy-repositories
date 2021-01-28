@@ -43,11 +43,8 @@ import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
 import com.why.githubtrendyrepos.viewmodels.Pages
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
+import com.why.githubtrendyrepos.viewmodels.RepoViewModel
 import com.why.template.compose.R
-
-private const val placeholderDescriptionText = "It does a lot of cool stuff, " +
-    "try it!! It does a lot of cool stuff, try it!! It does a lot of cool " +
-    "stuff, try it!! It does a lot of cool stuff, try it!!"
 
 @Composable
 private fun ImageText(
@@ -76,7 +73,7 @@ private fun ImageText(
 }
 
 @Composable
-fun RepoItem() {
+fun RepoItem(repoViewModel: RepoViewModel) {
     val typography = MaterialTheme.typography
 
     Surface {
@@ -85,11 +82,11 @@ fun RepoItem() {
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 16.dp)
         ) {
-            Text(text = "example-api-name", style = typography.subtitle1)
+            Text(text = repoViewModel.name, style = typography.subtitle1)
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = placeholderDescriptionText,
+                text = repoViewModel.description,
                 maxLines = 2,
                 style = typography.caption,
                 overflow = TextOverflow.Ellipsis
@@ -98,7 +95,7 @@ fun RepoItem() {
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 ImageText(
-                    text = "Author",
+                    text = repoViewModel.author,
                     modifier = Modifier
                         .weight(weight = 1f)
                         .align(alignment = Alignment.CenterVertically),
@@ -107,7 +104,7 @@ fun RepoItem() {
                 )
 
                 ImageText(
-                    text = "1.5k",
+                    text = repoViewModel.starsCountStr,
                     modifier = Modifier
                         .align(alignment = Alignment.CenterVertically),
                     imageVector = Icons.Default.Star,
@@ -222,19 +219,36 @@ fun Settings(vm: MainViewModel) {
     }
 }
 
+private fun repoViewModelMock(): RepoViewModel {
+    val description = "It does a lot of cool stuff, try it!! It does a lot " +
+        "of cool stuff, try it!! It does a lot of cool stuff, try it!! It " +
+        "does a lot of cool stuff, try it!!"
+
+    return RepoViewModel(
+
+        "name-example",
+        description,
+        "Author",
+        1500,
+        "https://repo-image-link"
+    )
+}
+
 @Composable
 fun Repos(innerPadding: PaddingValues) {
     Surface {
         ScrollableColumn(contentPadding = innerPadding) {
-            RepoItem()
+            val vm = repoViewModelMock()
+
+            RepoItem(vm)
             Divider()
-            RepoItem()
+            RepoItem(vm)
             Divider()
-            RepoItem()
+            RepoItem(vm)
             Divider()
-            RepoItem()
+            RepoItem(vm)
             Divider()
-            RepoItem()
+            RepoItem(vm)
             Divider()
         }
     }
@@ -271,7 +285,9 @@ fun Screen(mainViewModel: MainViewModel) {
 @Preview(showBackground = true, name = "Repo Item")
 fun RepoItemPreview() {
     MyTheme {
-        RepoItem()
+        val vm = repoViewModelMock()
+
+        RepoItem(vm)
     }
 }
 
@@ -279,7 +295,8 @@ fun RepoItemPreview() {
 @Preview(showBackground = true, name = "Repo Item - Dark theme")
 fun RepoItemDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        RepoItem()
+        val vm = repoViewModelMock()
+        RepoItem(vm)
     }
 }
 
@@ -311,6 +328,8 @@ fun TrendyReposPreview() {
 @Preview(showBackground = true, name = "Trendy Repos - Dark theme")
 fun TrendyReposDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        Screen(MainViewModel())
+        val mainViewModel = MainViewModel()
+        mainViewModel.darkThemeOn()
+        Screen(mainViewModel)
     }
 }
