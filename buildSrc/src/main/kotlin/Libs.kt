@@ -6,7 +6,7 @@ object Libs {
         const val plugin =
             "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
-        const val build = "com.android.tools.build:gradle:7.0.0-alpha04"
+        const val build = "com.android.tools.build:gradle:7.0.0-alpha05"
     }
 
     object AndroidX {
