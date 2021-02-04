@@ -256,19 +256,17 @@ fun Repos(innerPadding: PaddingValues) {
 
 @Composable
 fun Screen(mainViewModel: MainViewModel) {
-    MyTheme(isDarkTheme = mainViewModel.isDarkTheme) {
-        Scaffold(
-            topBar = {
-                TopBar(mainViewModel)
-            },
-            bottomBar = {
-                BottomBar(mainViewModel)
-            }
-        ) { innerPadding: PaddingValues ->
-            when (mainViewModel.currentlySelectedPage) {
-                TRENDING -> Repos(innerPadding)
-                SETTINGS -> Settings(mainViewModel)
-            }
+    Scaffold(
+        topBar = {
+            TopBar(mainViewModel)
+        },
+        bottomBar = {
+            BottomBar(mainViewModel)
+        }
+    ) { innerPadding: PaddingValues ->
+        when (mainViewModel.currentlySelectedPage) {
+            TRENDING -> Repos(innerPadding)
+            SETTINGS -> Settings(mainViewModel)
         }
     }
 }
