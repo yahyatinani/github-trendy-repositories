@@ -1,5 +1,8 @@
 package com.why.githubtrendyrepos.view
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,8 +29,15 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -37,8 +47,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.why.githubtrendyrepos.app.ReposGateway
-import com.why.githubtrendyrepos.app.Result
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import com.why.githubtrendyrepos.theme.MyTheme
 import com.why.githubtrendyrepos.viewmodels.MainViewModel
 import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
@@ -46,26 +56,71 @@ import com.why.githubtrendyrepos.viewmodels.Pages
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import com.why.githubtrendyrepos.viewmodels.RepoViewModel
+import com.why.githubtrendyrepos.viewmodels.ReposGatewayMock
 import com.why.template.compose.R
-import kotlinx.datetime.LocalDate
+
+@Composable
+fun NetworkImage(
+    url: String?,
+    modifier: Modifier,
+    placeholder: @Composable () -> Unit
+) {
+    var image by remember { mutableStateOf<ImageBitmap?>(null) }
+    var isImageReady by remember { mutableStateOf(false) }
+
+    onCommit(url) {
+        val picasso = Picasso.get()
+
+        val target = object : Target {
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                isImageReady = false
+            }
+
+            override fun onBitmapFailed(
+                e: Exception?,
+                errorDrawable: Drawable?
+            ) {
+                isImageReady = false
+            }
+
+            override fun onBitmapLoaded(
+                bitmap: Bitmap?,
+                from: Picasso.LoadedFrom?
+            ) {
+                image = bitmap?.asImageBitmap()
+                isImageReady = true
+            }
+        }
+
+        picasso
+            .load(url)
+            .resize(24, 24)
+            .centerCrop()
+            .into(target)
+
+        onDispose {
+            image = null
+            isImageReady = false
+            picasso.cancelRequest(target)
+        }
+    }
+
+    when {
+        isImageReady -> Image(image!!, modifier = modifier)
+        else -> placeholder()
+    }
+}
 
 @Composable
 private fun ImageText(
     text: String,
     modifier: Modifier = Modifier,
-    imageVector: ImageVector,
-    imgSize: Dp = 24.dp,
     spaceWidth: Dp = 8.dp,
-    textStyle: TextStyle
+    textStyle: TextStyle,
+    image: @Composable () -> Unit,
 ) {
     Row(modifier = modifier) {
-        Icon(
-            imageVector = imageVector,
-            modifier = Modifier
-                .size(imgSize)
-                .align(Alignment.CenterVertically)
-        )
-        // TODO: Put the repos image in here.
+        image()
         Spacer(modifier = Modifier.width(spaceWidth))
         Text(
             text = text,
@@ -102,19 +157,36 @@ fun RepoItem(repoViewModel: RepoViewModel) {
                     modifier = Modifier
                         .weight(weight = 1f)
                         .align(alignment = Alignment.CenterVertically),
-                    imageVector = Icons.Default.Image,
                     textStyle = typography.overline
-                )
+                ) {
+                    val modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.CenterVertically)
+                    NetworkImage(
+                        url = repoViewModel.authorAvatarUrl,
+                        modifier = modifier
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Image,
+                            modifier = modifier
+                        )
+                    }
+                }
 
                 ImageText(
                     text = repoViewModel.starsCountStr,
                     modifier = Modifier
                         .align(alignment = Alignment.CenterVertically),
-                    imageVector = Icons.Default.Star,
-                    imgSize = 16.dp,
                     spaceWidth = 4.dp,
                     textStyle = typography.overline
-                )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                }
             }
         }
     }
@@ -238,12 +310,12 @@ private fun repoViewModelMock(): RepoViewModel {
 }
 
 @Composable
-fun Repos(innerPadding: PaddingValues) {
+fun Repos(innerPadding: PaddingValues, mainViewModel: MainViewModel) {
     Surface {
+        mainViewModel.loadRepos()
         LazyColumn(contentPadding = innerPadding) {
-            val vm = repoViewModelMock()
-            items(listOf(vm, vm, vm, vm, vm, vm, vm)) {
-                RepoItem(vm)
+            items(mainViewModel.repos) { repoViewModel ->
+                RepoItem(repoViewModel)
                 Divider()
             }
         }
@@ -261,7 +333,7 @@ fun Screen(mainViewModel: MainViewModel) {
         }
     ) { innerPadding: PaddingValues ->
         when (mainViewModel.currentlySelectedPage) {
-            TRENDING -> Repos(innerPadding)
+            TRENDING -> Repos(innerPadding, mainViewModel)
             SETTINGS -> Settings(mainViewModel)
         }
     }
@@ -274,14 +346,6 @@ fun Screen(mainViewModel: MainViewModel) {
  *
  *
  **/
-
-class ReposGatewayMock : ReposGateway {
-    override suspend fun getMostStaredReposSince(
-        creationDate: LocalDate, page: Int
-    ): Map<Result, Any> = mapOf()
-
-    override fun close() {}
-}
 
 @Composable
 @Preview(showBackground = true, name = "Repo Item")

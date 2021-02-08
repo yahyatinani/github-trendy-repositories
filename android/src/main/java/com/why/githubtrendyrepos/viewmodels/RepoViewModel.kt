@@ -5,7 +5,7 @@ data class RepoViewModel(
     val description: String,
     val author: String,
     val starsCount: Int,
-    val repoImageLink: String,
+    val authorAvatarUrl: String,
 ) {
 
     private lateinit var _starsCountCache: String

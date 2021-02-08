@@ -1,6 +1,8 @@
 package com.why.githubtrendyrepos.gateways
 
 import com.why.githubtrendyrepos.app.GatewayError.NoConnectivity
+import com.why.githubtrendyrepos.app.Repo
+import com.why.githubtrendyrepos.app.RepoDeserializer
 import com.why.githubtrendyrepos.app.ReposGatewayImpl
 import com.why.githubtrendyrepos.app.Result.Error
 import com.why.githubtrendyrepos.app.Result.Ok
@@ -64,13 +66,14 @@ class ReposGatewayTest : FreeSpec(
 
                 runBlocking {
                     val r = gateway.getMostStaredReposSince(creationDate, 1)
-                    val repos = r[Ok] as List<Map<String, Any>>
+                    val repos = r[Ok] as List<Repo>
                     val repo = repos[0]
-                    val owner = repo["owner"] as Map<String, Any>
 
-                    repo["description"] shouldBe "Cool repo"
-                    repo["stargazers_count"] shouldBe 28
-                    owner["avatar_url"] shouldBe "https://avatars.github.com"
+                    repo.name shouldBe "RepoName"
+                    repo.description shouldBe ""
+                    repo.author shouldBe "author"
+                    repo.starsCount shouldBe 28
+                    repo.avatarUrl shouldBe "https://avatars.github.com"
                 }
             }
 
@@ -122,11 +125,12 @@ class ReposGatewayTest : FreeSpec(
             {
                 "items": [
                     {
-                        "name": "reanimation",
+                        "name": "RepoName",
                         "owner": {
+                            "login": "author",
                             "avatar_url": "https://avatars.github.com"
                         },
-                        "description": "Cool repo",
+                        "description": null,
                         "stargazers_count": 28
                     }
                 ]
@@ -135,7 +139,10 @@ class ReposGatewayTest : FreeSpec(
 
         val httpClientMock = HttpClient(MockEngine) {
             install(JsonFeature) {
-                serializer = GsonSerializer()
+                serializer = GsonSerializer {
+                    registerTypeAdapter(Repo::class.java, RepoDeserializer())
+                        .create()
+                }
             }
             engine {
                 addHandler { request ->

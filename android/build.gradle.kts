@@ -35,6 +35,8 @@ dependencies {
 
     implementation(Libs.Ktor.mock)
 
+    implementation(Libs.Picasso.picasso)
+
     testImplementation(Libs.Kotest.runner)
     testImplementation(Libs.Kotest.assertions)
     testImplementation(Libs.Kotest.property)

@@ -8,6 +8,8 @@ import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.reflection.shouldBeSubtypeOf
 import io.kotest.matchers.shouldBe
 
@@ -23,6 +25,7 @@ class MainViewModelTest : FreeSpec(
             val vm = MainViewModel(ReposGatewayImpl())
             val oldSelectedPage = vm.currentlySelectedPage
 
+            vm.repos.shouldBeEmpty()
             vm::class.shouldBeSubtypeOf<ViewModel>()
             vm.isDarkTheme.shouldBeFalse()
             vm.navigationItems shouldBe defaultItems
@@ -66,6 +69,16 @@ class MainViewModelTest : FreeSpec(
             vm.darkThemeOff()
 
             vm.isDarkTheme.shouldBeFalse()
+        }
+
+        "loadRepos()" - {
+            "It should update the list of repos" {
+                val vm = MainViewModel(ReposGatewayMock())
+
+                vm.loadRepos()
+
+                vm.repos.size shouldBeExactly 1
+            }
         }
     }
 )

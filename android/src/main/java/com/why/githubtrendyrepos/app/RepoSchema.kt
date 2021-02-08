@@ -4,5 +4,6 @@ enum class RepoSchema {
     Name,
     Description,
     StarsCount,
-    ImageURL
+    ImageURL,
+    Author,
 }

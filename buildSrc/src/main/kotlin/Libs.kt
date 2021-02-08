@@ -87,4 +87,10 @@ object Libs {
 
         const val mock = "io.ktor:ktor-client-mock:$version"
     }
+
+    object Picasso {
+        private const val version = "2.8"
+
+        const val picasso = "com.squareup.picasso:picasso:$version"
+    }
 }
