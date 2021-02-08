@@ -5,10 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.github.whyrising.y.concretions.map.m
+import com.why.githubtrendyrepos.app.ReposGateway
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 
-class MainViewModel : ViewModel() {
+class MainViewModel(val gateway: ReposGateway) : ViewModel() {
 
     private fun defaultItems() = m(
         TRENDING to NavigationItemViewModel(TRENDING, true, ::onSelect),

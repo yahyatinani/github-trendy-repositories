@@ -2,6 +2,7 @@ package com.why.githubtrendyrepos.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.github.whyrising.y.concretions.map.m
+import com.why.githubtrendyrepos.app.ReposGatewayImpl
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import io.kotest.core.spec.style.FreeSpec
@@ -18,7 +19,8 @@ class MainViewModelTest : FreeSpec(
                 TRENDING to item,
                 SETTINGS to NavigationItemViewModel(SETTINGS) {}
             )
-            val vm = MainViewModel()
+
+            val vm = MainViewModel(ReposGatewayImpl())
             val oldSelectedPage = vm.currentlySelectedPage
 
             vm::class.shouldBeSubtypeOf<ViewModel>()
@@ -29,7 +31,7 @@ class MainViewModelTest : FreeSpec(
         }
 
         "select(navigationItem) should select() the navigationItem passed" {
-            val vm = MainViewModel()
+            val vm = MainViewModel(ReposGatewayImpl())
             val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
             val oldSelectedPage = vm.currentlySelectedPage
 
@@ -40,7 +42,7 @@ class MainViewModelTest : FreeSpec(
         }
 
         "defaultItems should be wired with select()" {
-            val vm = MainViewModel()
+            val vm = MainViewModel(ReposGatewayImpl())
             val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
             val oldSelectedPage = vm.currentlySelectedPage
 
@@ -51,7 +53,7 @@ class MainViewModelTest : FreeSpec(
         }
 
         "darkThemeOn()" {
-            val vm = MainViewModel()
+            val vm = MainViewModel(ReposGatewayImpl())
 
             vm.darkThemeOn()
 
@@ -59,7 +61,7 @@ class MainViewModelTest : FreeSpec(
         }
 
         "darkThemeOff()" {
-            val vm = MainViewModel()
+            val vm = MainViewModel(ReposGatewayImpl())
 
             vm.darkThemeOff()
 

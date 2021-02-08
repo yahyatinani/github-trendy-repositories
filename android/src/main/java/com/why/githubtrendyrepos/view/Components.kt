@@ -37,6 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.why.githubtrendyrepos.app.ReposGateway
+import com.why.githubtrendyrepos.app.Result
 import com.why.githubtrendyrepos.theme.MyTheme
 import com.why.githubtrendyrepos.viewmodels.MainViewModel
 import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
@@ -45,6 +47,7 @@ import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import com.why.githubtrendyrepos.viewmodels.RepoViewModel
 import com.why.template.compose.R
+import kotlinx.datetime.LocalDate
 
 @Composable
 private fun ImageText(
@@ -272,6 +275,14 @@ fun Screen(mainViewModel: MainViewModel) {
  *
  **/
 
+class ReposGatewayMock : ReposGateway {
+    override suspend fun getMostStaredReposSince(
+        creationDate: LocalDate, page: Int
+    ): Map<Result, Any> = mapOf()
+
+    override fun close() {}
+}
+
 @Composable
 @Preview(showBackground = true, name = "Repo Item")
 fun RepoItemPreview() {
@@ -295,7 +306,7 @@ fun RepoItemDarkPreview() {
 @Preview(showBackground = true)
 fun SettingsPreview() {
     MyTheme {
-        Settings(MainViewModel())
+        Settings(MainViewModel(ReposGatewayMock()))
     }
 }
 
@@ -303,7 +314,7 @@ fun SettingsPreview() {
 @Preview(showBackground = true)
 fun SettingsDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        Settings(MainViewModel())
+        Settings(MainViewModel(ReposGatewayMock()))
     }
 }
 
@@ -311,7 +322,7 @@ fun SettingsDarkPreview() {
 @Preview(showBackground = true)
 fun TrendyReposPreview() {
     MyTheme {
-        Screen(MainViewModel())
+        Screen(MainViewModel(ReposGatewayMock()))
     }
 }
 
@@ -319,7 +330,7 @@ fun TrendyReposPreview() {
 @Preview(showBackground = true, name = "Trendy Repos - Dark theme")
 fun TrendyReposDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        val mainViewModel = MainViewModel()
+        val mainViewModel = MainViewModel(ReposGatewayMock())
         mainViewModel.darkThemeOn()
         Screen(mainViewModel)
     }
