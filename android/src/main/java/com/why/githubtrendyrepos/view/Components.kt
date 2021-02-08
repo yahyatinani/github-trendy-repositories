@@ -1,6 +1,5 @@
 package com.why.githubtrendyrepos.view
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
@@ -237,19 +237,12 @@ private fun repoViewModelMock(): RepoViewModel {
 @Composable
 fun Repos(innerPadding: PaddingValues) {
     Surface {
-        ScrollableColumn(contentPadding = innerPadding) {
+        LazyColumn(contentPadding = innerPadding) {
             val vm = repoViewModelMock()
-
-            RepoItem(vm)
-            Divider()
-            RepoItem(vm)
-            Divider()
-            RepoItem(vm)
-            Divider()
-            RepoItem(vm)
-            Divider()
-            RepoItem(vm)
-            Divider()
+            items(listOf(vm, vm, vm, vm, vm, vm, vm)) {
+                RepoItem(vm)
+                Divider()
+            }
         }
     }
 }
