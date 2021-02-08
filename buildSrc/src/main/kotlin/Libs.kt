@@ -47,7 +47,7 @@ object Libs {
     }
 
     object Kotest {
-        private const val version = "4.3.2"
+        private const val version = "4.4.0"
 
         const val runner = "io.kotest:kotest-runner-junit5:$version"
         const val assertions = "io.kotest:kotest-assertions-core:$version"
@@ -60,5 +60,31 @@ object Libs {
 
         const val core = "$group:y-core:$version"
         const val collections = "$group:y-collections:$version"
+    }
+
+    object Kotlinx {
+        private const val id = "org.jetbrains.kotlinx"
+        private const val coroutinesVersion = "1.4.2"
+
+        const val coroutines =
+            "$id:kotlinx-coroutines-android:$coroutinesVersion"
+
+        const val coroutinesTest =
+            "$id:kotlinx-coroutines-test:$coroutinesVersion"
+
+        const val datetime = "$id:kotlinx-datetime:0.1.1"
+    }
+
+    object Ktor {
+
+        private const val version = "1.5.1"
+
+        const val core = "io.ktor:ktor-client-core:version"
+
+        const val engine = "io.ktor:ktor-client-android:$version"
+
+        const val gson = "io.ktor:ktor-client-gson:$version"
+
+        const val mock = "io.ktor:ktor-client-mock:$version"
     }
 }
