@@ -9,7 +9,6 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.reflection.shouldBeSubtypeOf
 import io.kotest.matchers.shouldBe
 
@@ -33,15 +32,30 @@ class MainViewModelTest : FreeSpec(
             vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeTrue()
         }
 
-        "select(navigationItem) should select() the navigationItem passed" {
-            val vm = MainViewModel(ReposGatewayImpl())
-            val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
-            val oldSelectedPage = vm.currentlySelectedPage
+        "select(navigationItem)" - {
+            """
+                It should deselect() the current nav item and set the new
+                selected page
+            """ {
+                val vm = MainViewModel(ReposGatewayMock())
+                val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
+                val oldSelectedPage = vm.currentlySelectedPage
 
-            vm.onSelect(toBeSelectedItem)
+                vm.onSelect(toBeSelectedItem)
 
-            vm.currentlySelectedPage shouldBe toBeSelectedItem.page
-            vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeFalse()
+                vm.currentlySelectedPage shouldBe toBeSelectedItem.page
+                vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeFalse()
+            }
+
+            "when passing the the same selected item, it should do nothing" {
+                val vm = MainViewModel(ReposGatewayMock())
+                val currentlySelectedItem = vm.navigationItems(TRENDING)!!
+
+                vm.onSelect(currentlySelectedItem)
+
+                currentlySelectedItem.isSelected.shouldBeTrue()
+                vm.currentlySelectedPage shouldBe TRENDING
+            }
         }
 
         "defaultItems should be wired with select()" {
@@ -69,16 +83,6 @@ class MainViewModelTest : FreeSpec(
             vm.darkThemeOff()
 
             vm.isDarkTheme.shouldBeFalse()
-        }
-
-        "loadRepos()" - {
-            "It should update the list of repos" {
-                val vm = MainViewModel(ReposGatewayMock())
-
-                vm.loadRepos()
-
-                vm.repos.size shouldBeExactly 1
-            }
         }
     }
 )

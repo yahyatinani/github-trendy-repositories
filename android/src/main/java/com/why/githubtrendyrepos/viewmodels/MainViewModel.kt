@@ -37,8 +37,10 @@ class MainViewModel(private val gateway: ReposGateway) : ViewModel() {
         private set
 
     fun onSelect(navigationItem: NavigationItemViewModel) {
-        navigationItems(currentlySelectedPage)?.deselect()
-        currentlySelectedPage = navigationItem.page
+        if (currentlySelectedPage != navigationItem.page) {
+            navigationItems(currentlySelectedPage)?.deselect()
+            currentlySelectedPage = navigationItem.page
+        }
     }
 
     fun darkThemeOn() {
