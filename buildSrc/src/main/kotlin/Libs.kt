@@ -1,5 +1,5 @@
 object Libs {
-    const val kotlinVersion = "1.4.21"
+    const val kotlinVersion = "1.4.21-2"
     const val jvmTarget = "11"
 
     object Gradle {
@@ -25,7 +25,7 @@ object Libs {
 
     object Compose {
         private const val gr = "androidx.compose"
-        const val version = "1.0.0-alpha10"
+        const val version = "1.0.0-alpha11"
 
         const val ui = "$gr.ui:ui:$version"
 
@@ -92,5 +92,11 @@ object Libs {
         private const val version = "2.8"
 
         const val picasso = "com.squareup.picasso:picasso:$version"
+    }
+
+    object Paging {
+        private const val version = "1.0.0-alpha06"
+
+        const val copmpose = "androidx.paging:paging-compose:$version"
     }
 }

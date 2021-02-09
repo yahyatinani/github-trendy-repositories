@@ -37,6 +37,8 @@ dependencies {
 
     implementation(Libs.Picasso.picasso)
 
+    implementation(Libs.Paging.copmpose)
+
     testImplementation(Libs.Kotest.runner)
     testImplementation(Libs.Kotest.assertions)
     testImplementation(Libs.Kotest.property)

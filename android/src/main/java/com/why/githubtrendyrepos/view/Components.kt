@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
@@ -29,9 +30,9 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,7 +69,7 @@ fun NetworkImage(
     var image by remember { mutableStateOf<ImageBitmap?>(null) }
     var isImageReady by remember { mutableStateOf(false) }
 
-    onCommit(url) {
+    DisposableEffect(url) {
         val picasso = Picasso.get()
 
         val target = object : Target {
@@ -106,7 +107,11 @@ fun NetworkImage(
     }
 
     when {
-        isImageReady -> Image(image!!, modifier = modifier)
+        isImageReady -> Image(
+            bitmap = image!!,
+            contentDescription = null,
+            modifier = modifier,
+        )
         else -> placeholder()
     }
 }
@@ -168,6 +173,7 @@ fun RepoItem(repoViewModel: RepoViewModel) {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Image,
+                            contentDescription = null,
                             modifier = modifier
                         )
                     }
@@ -182,6 +188,7 @@ fun RepoItem(repoViewModel: RepoViewModel) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
+                        contentDescription = null,
                         modifier = Modifier
                             .size(16.dp)
                             .align(Alignment.CenterVertically)
@@ -244,7 +251,7 @@ private fun NavigationItem(navigationItemVm: NavigationItemViewModel) {
             Text(text = label)
         },
         icon = {
-            Icon(icon)
+            Icon(icon, contentDescription = null)
         },
         selected = navigationItemVm.isSelected,
         selectedContentColor = colors.secondary,
