@@ -1,5 +1,7 @@
 package com.why.githubtrendyrepos.gateways
 
+import com.why.githubtrendyrepos.app.GatewayError
+import com.why.githubtrendyrepos.app.GatewayError.DataLimitReached
 import com.why.githubtrendyrepos.app.GatewayError.NoConnectivity
 import com.why.githubtrendyrepos.app.Repo
 import com.why.githubtrendyrepos.app.RepoDeserializer
@@ -77,16 +79,16 @@ class ReposGatewayTest : FreeSpec(
                 }
             }
 
-//            "when reach limit of data available, return an error" {
-//                val gateway = ReposGatewayImpl(httpClientMock)
-//
-//                runBlocking {
-//                    val r = gateway.getMostStaredReposSince(creationDate, 50)
-//
-//                    r[Error] shouldBe DataLimitReached
-//                }
-//            }
-//
+            "when reach limit of data available, return an DataLimitReached" {
+                val gateway = ReposGatewayImpl(httpClientMock)
+
+                runBlocking {
+                    val r = gateway.getMostStaredReposSince(creationDate, 50)
+
+                    r[Error] shouldBe DataLimitReached
+                }
+            }
+
             "When server down or no network, It should return NoConnectivity" {
                 val gateway = ReposGatewayImpl(httpClientMock)
 
@@ -156,7 +158,13 @@ class ReposGatewayTest : FreeSpec(
                             TextContent(reposJson, ContentType.Application.Json)
                             respond(reposJson, headers = headers)
                         }
-                        else -> TODO()
+                        else -> {
+                            respondError(
+                                HttpStatusCode.UnprocessableEntity,
+                                reposJson,
+                                headersOf("Content-Type" to listOf())
+                            )
+                        }
                     }
 
                 }
