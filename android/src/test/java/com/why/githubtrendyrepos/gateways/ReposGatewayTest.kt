@@ -1,8 +1,8 @@
 package com.why.githubtrendyrepos.gateways
 
-import com.why.githubtrendyrepos.app.GatewayError
-import com.why.githubtrendyrepos.app.GatewayError.DataLimitReached
-import com.why.githubtrendyrepos.app.GatewayError.NoConnectivity
+import com.why.githubtrendyrepos.app.DataLimitReached
+import com.why.githubtrendyrepos.app.NoConnectivity
+import com.why.githubtrendyrepos.app.RateLimitExceeded
 import com.why.githubtrendyrepos.app.Repo
 import com.why.githubtrendyrepos.app.RepoDeserializer
 import com.why.githubtrendyrepos.app.ReposGatewayImpl
@@ -12,6 +12,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldBeSubtypeOf
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.engine.mock.*
@@ -79,13 +80,23 @@ class ReposGatewayTest : FreeSpec(
                 }
             }
 
-            "when reach limit of data available, return an DataLimitReached" {
+            "when rate limit exceeded, it should return an error" {
                 val gateway = ReposGatewayImpl(httpClientMock)
 
                 runBlocking {
                     val r = gateway.getMostStaredReposSince(creationDate, 50)
 
-                    r[Error] shouldBe DataLimitReached
+                    r[Error].shouldBeInstanceOf<RateLimitExceeded>()
+                }
+            }
+
+            "when requesting more than 1k repos, it should return an error" {
+                val gateway = ReposGatewayImpl(httpClientMock)
+
+                runBlocking {
+                    val r = gateway.getMostStaredReposSince(creationDate, 100)
+
+                    r[Error].shouldBeInstanceOf<DataLimitReached>()
                 }
             }
 
@@ -95,7 +106,7 @@ class ReposGatewayTest : FreeSpec(
                 runBlocking {
                     val r = gateway.getMostStaredReposSince(creationDate, -1)
 
-                    r[Error] shouldBe NoConnectivity
+                    r[Error].shouldBeInstanceOf<NoConnectivity>()
                 }
             }
 
@@ -157,6 +168,13 @@ class ReposGatewayTest : FreeSpec(
                             val headers = headersOf("Content-Type" to listOf(t))
                             TextContent(reposJson, ContentType.Application.Json)
                             respond(reposJson, headers = headers)
+                        }
+                        page == 50 -> {
+                            respondError(
+                                HttpStatusCode.Forbidden,
+                                reposJson,
+                                headersOf("Content-Type" to listOf())
+                            )
                         }
                         else -> {
                             respondError(

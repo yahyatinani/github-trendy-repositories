@@ -3,8 +3,6 @@ package com.why.githubtrendyrepos.app
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.why.githubtrendyrepos.app.GatewayError.DataLimitReached
-import com.why.githubtrendyrepos.app.GatewayError.NoConnectivity
 import com.why.githubtrendyrepos.app.Result.Error
 import com.why.githubtrendyrepos.app.Result.Ok
 import io.ktor.client.*
@@ -36,14 +34,18 @@ class ReposGatewayImpl(
             mapOf(Ok to action())
         } catch (e: ClientRequestException) {
             when (e.response.status) {
-                HttpStatusCode.UnprocessableEntity ->
-                    mapOf(Error to DataLimitReached)
+                HttpStatusCode.Forbidden -> {
+                    mapOf(Error to RateLimitExceeded())
+                }
+                HttpStatusCode.UnprocessableEntity -> {
+                    mapOf(Error to DataLimitReached())
+                }
                 else -> {
-                    TODO()
+                    throw RuntimeException(e.response.status.toString())
                 }
             }
         } catch (e: UnknownHostException) {
-            mapOf(Error to NoConnectivity)
+            mapOf(Error to NoConnectivity())
         }
     }
 
@@ -78,10 +80,11 @@ enum class Result {
     Error,
 }
 
-enum class GatewayError {
-    DataLimitReached,
-    NoConnectivity,
-}
+class RateLimitExceeded : RuntimeException()
+
+class DataLimitReached : RuntimeException()
+
+class NoConnectivity : RuntimeException()
 
 class RepoDeserializer : JsonDeserializer<Any> {
     override fun deserialize(
