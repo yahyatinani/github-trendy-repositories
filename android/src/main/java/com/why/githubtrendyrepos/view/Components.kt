@@ -3,19 +3,22 @@ package com.why.githubtrendyrepos.view
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -42,14 +45,23 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import com.why.githubtrendyrepos.app.DataLimitReached
+import com.why.githubtrendyrepos.app.GetTrendyReposUseCase
+import com.why.githubtrendyrepos.app.NoConnectivity
+import com.why.githubtrendyrepos.app.RateLimitExceeded
 import com.why.githubtrendyrepos.theme.MyTheme
 import com.why.githubtrendyrepos.viewmodels.MainViewModel
 import com.why.githubtrendyrepos.viewmodels.NavigationItemViewModel
@@ -59,6 +71,9 @@ import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import com.why.githubtrendyrepos.viewmodels.RepoViewModel
 import com.why.githubtrendyrepos.viewmodels.ReposGatewayMock
 import com.why.template.compose.R
+import com.why.template.compose.R.string.err_api_rate_limit_exceeded
+import com.why.template.compose.R.string.err_no_internet_connection
+import com.why.template.compose.R.string.err_no_more_data_available
 
 @Composable
 fun NetworkImage(
@@ -317,13 +332,77 @@ private fun repoViewModelMock(): RepoViewModel {
 }
 
 @Composable
+fun ProgressIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        CircularProgressIndicator(
+            color = MaterialTheme.colors.secondary,
+            modifier = Modifier
+                .align(Alignment.Center)
+        )
+    }
+}
+
+@Composable
+private fun NoMoreDataMessage(message: String) {
+    Surface(
+        color = MaterialTheme.colors.error
+    ) {
+        val boldStyle = TextStyle(fontWeight = FontWeight.Bold)
+        Text(
+            text = message,
+            style = MaterialTheme.typography.caption.merge(boldStyle),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.surface,
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun errorMessage(loadState: LoadState) =
+    when ((loadState as LoadState.Error).error) {
+        is RateLimitExceeded -> stringResource(err_api_rate_limit_exceeded)
+        is DataLimitReached -> stringResource(err_no_more_data_available)
+        is NoConnectivity -> stringResource(err_no_internet_connection)
+        else -> "Unknown error!"
+    }
+
+
+@Composable
 fun Repos(innerPadding: PaddingValues, mainViewModel: MainViewModel) {
     Surface {
-        mainViewModel.loadRepos()
-        LazyColumn(contentPadding = innerPadding) {
-            items(mainViewModel.repos) { repoViewModel ->
-                RepoItem(repoViewModel)
-                Divider()
+        val repos = mainViewModel.reposPagination().collectAsLazyPagingItems()
+        LazyColumn(
+            contentPadding = innerPadding,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            items(repos) { vm ->
+                if (vm != null) {
+                    RepoItem(vm)
+                    Divider()
+                }
+            }
+            repos.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> item() {
+                        ProgressIndicator()
+                    }
+                    loadState.append is LoadState.Loading -> item {
+                        ProgressIndicator()
+                    }
+                    loadState.refresh is LoadState.Error -> item {
+                        NoMoreDataMessage(errorMessage(loadState.refresh))
+                    }
+                    loadState.append is LoadState.Error -> item {
+                        NoMoreDataMessage(errorMessage(loadState.append))
+                    }
+                }
             }
         }
     }
@@ -355,6 +434,22 @@ fun Screen(mainViewModel: MainViewModel) {
  **/
 
 @Composable
+@Preview(showBackground = true, name = "No data error")
+fun NoDataMessagePreview() {
+    MyTheme {
+        NoMoreDataMessage("No more data available")
+    }
+}
+
+@Composable
+@Preview(showBackground = true, name = "No data error - Dark")
+fun NoDataMessageDarkPreview() {
+    MyTheme(isDarkTheme = true) {
+        NoMoreDataMessage("No more data available")
+    }
+}
+
+@Composable
 @Preview(showBackground = true, name = "Repo Item")
 fun RepoItemPreview() {
     MyTheme {
@@ -368,16 +463,18 @@ fun RepoItemPreview() {
 @Preview(showBackground = true, name = "Repo Item - Dark theme")
 fun RepoItemDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        val vm = repoViewModelMock()
-        RepoItem(vm)
+        RepoItem(repoViewModelMock())
     }
 }
+
+private fun mainViewModel() =
+    MainViewModel(GetTrendyReposUseCase(ReposGatewayMock()))
 
 @Composable
 @Preview(showBackground = true)
 fun SettingsPreview() {
     MyTheme {
-        Settings(MainViewModel(ReposGatewayMock()))
+        Settings(mainViewModel())
     }
 }
 
@@ -385,7 +482,7 @@ fun SettingsPreview() {
 @Preview(showBackground = true)
 fun SettingsDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        Settings(MainViewModel(ReposGatewayMock()))
+        Settings(mainViewModel())
     }
 }
 
@@ -393,7 +490,7 @@ fun SettingsDarkPreview() {
 @Preview(showBackground = true)
 fun TrendyReposPreview() {
     MyTheme {
-        Screen(MainViewModel(ReposGatewayMock()))
+        Screen(mainViewModel())
     }
 }
 
@@ -401,7 +498,7 @@ fun TrendyReposPreview() {
 @Preview(showBackground = true, name = "Trendy Repos - Dark theme")
 fun TrendyReposDarkPreview() {
     MyTheme(isDarkTheme = true) {
-        val mainViewModel = MainViewModel(ReposGatewayMock())
+        val mainViewModel = mainViewModel()
         mainViewModel.darkThemeOn()
         Screen(mainViewModel)
     }
