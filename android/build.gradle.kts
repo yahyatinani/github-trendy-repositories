@@ -39,6 +39,8 @@ dependencies {
 
     implementation(Libs.Paging.copmpose)
 
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.1")
+
     testImplementation(Libs.Kotest.runner)
     testImplementation(Libs.Kotest.assertions)
     testImplementation(Libs.Kotest.property)
@@ -54,6 +56,7 @@ android {
 
     defaultConfig {
         applicationId = "com.why.githubtrendyrepos"
+        multiDexEnabled = true
         minSdkVersion(22)
         targetSdkVersion(30)
         versionCode = 1
@@ -71,6 +74,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
