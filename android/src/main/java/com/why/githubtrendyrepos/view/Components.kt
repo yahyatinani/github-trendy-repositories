@@ -2,6 +2,7 @@ package com.why.githubtrendyrepos.view
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -85,7 +86,7 @@ fun NetworkImage(
     var isImageReady by remember { mutableStateOf(false) }
 
     DisposableEffect(url) {
-        val picasso = Picasso.get()
+        var picasso: Picasso? = null
 
         val target = object : Target {
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
@@ -107,17 +108,22 @@ fun NetworkImage(
                 isImageReady = true
             }
         }
+        try {
+            picasso = Picasso.get()
 
-        picasso
-            .load(url)
-            .resize(24, 24)
-            .centerCrop()
-            .into(target)
+            picasso
+                .load(url)
+                .resize(24, 24)
+                .centerCrop()
+                .into(target)
+        } catch (e: Exception) {
+            Log.println(Log.ERROR, "PICASSO", e.toString())
+        }
 
         onDispose {
             image = null
             isImageReady = false
-            picasso.cancelRequest(target)
+            picasso?.cancelRequest(target)
         }
     }
 
@@ -322,7 +328,6 @@ private fun repoViewModelMock(): RepoViewModel {
         "does a lot of cool stuff, try it!!"
 
     return RepoViewModel(
-
         "name-example",
         description,
         "Author",
