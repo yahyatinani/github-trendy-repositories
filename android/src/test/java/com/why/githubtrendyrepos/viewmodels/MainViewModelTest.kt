@@ -2,13 +2,12 @@ package com.why.githubtrendyrepos.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.github.whyrising.y.concretions.map.m
-import com.why.githubtrendyrepos.app.ReposGatewayImpl
+import com.why.githubtrendyrepos.app.GetTrendyReposUseCase
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.reflection.shouldBeSubtypeOf
 import io.kotest.matchers.shouldBe
 
@@ -21,14 +20,13 @@ class MainViewModelTest : FreeSpec(
                 SETTINGS to NavigationItemViewModel(SETTINGS) {}
             )
 
-            val vm = MainViewModel(ReposGatewayImpl())
+            val vm = MainViewModel(GetTrendyReposUseCase(ReposGatewayMock()))
             val oldSelectedPage = vm.currentlySelectedPage
 
-            vm.repos.shouldBeEmpty()
             vm::class.shouldBeSubtypeOf<ViewModel>()
+            oldSelectedPage shouldBe TRENDING
             vm.isDarkTheme.shouldBeFalse()
             vm.navigationItems shouldBe defaultItems
-            oldSelectedPage shouldBe TRENDING
             vm.navigationItems(oldSelectedPage)!!.isSelected.shouldBeTrue()
         }
 
@@ -37,7 +35,8 @@ class MainViewModelTest : FreeSpec(
                 It should deselect() the current nav item and set the new
                 selected page
             """ {
-                val vm = MainViewModel(ReposGatewayMock())
+                val vm =
+                    MainViewModel(GetTrendyReposUseCase(ReposGatewayMock()))
                 val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
                 val oldSelectedPage = vm.currentlySelectedPage
 
@@ -48,7 +47,8 @@ class MainViewModelTest : FreeSpec(
             }
 
             "when passing the the same selected item, it should do nothing" {
-                val vm = MainViewModel(ReposGatewayMock())
+                val vm =
+                    MainViewModel(GetTrendyReposUseCase(ReposGatewayMock()))
                 val currentlySelectedItem = vm.navigationItems(TRENDING)!!
 
                 vm.onSelect(currentlySelectedItem)
@@ -58,8 +58,8 @@ class MainViewModelTest : FreeSpec(
             }
         }
 
-        "defaultItems should be wired with select()" {
-            val vm = MainViewModel(ReposGatewayImpl())
+        "defaultItems should be wired with onSelect(navItem)" {
+            val vm = MainViewModel(GetTrendyReposUseCase(ReposGatewayMock()))
             val toBeSelectedItem = vm.navigationItems(SETTINGS)!!
             val oldSelectedPage = vm.currentlySelectedPage
 
@@ -70,7 +70,7 @@ class MainViewModelTest : FreeSpec(
         }
 
         "darkThemeOn()" {
-            val vm = MainViewModel(ReposGatewayImpl())
+            val vm = MainViewModel(GetTrendyReposUseCase(ReposGatewayMock()))
 
             vm.darkThemeOn()
 
@@ -78,7 +78,7 @@ class MainViewModelTest : FreeSpec(
         }
 
         "darkThemeOff()" {
-            val vm = MainViewModel(ReposGatewayImpl())
+            val vm = MainViewModel(GetTrendyReposUseCase(ReposGatewayMock()))
 
             vm.darkThemeOff()
 

@@ -6,14 +6,15 @@ import androidx.activity.viewModels
 import androidx.compose.ui.platform.setContent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.why.githubtrendyrepos.app.ReposGateway
+import com.why.githubtrendyrepos.app.GetTrendyReposUseCase
 import com.why.githubtrendyrepos.app.ReposGatewayImpl
+import com.why.githubtrendyrepos.app.UseCase
 import com.why.githubtrendyrepos.theme.MyTheme
 import com.why.githubtrendyrepos.viewmodels.MainViewModel
 
 class MainActivity : ComponentActivity() {
     private val mainViewModel by viewModels<MainViewModel> {
-        MainViewModelFactory(ReposGatewayImpl())
+        MainViewModelFactory(GetTrendyReposUseCase(ReposGatewayImpl()))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,14 +27,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    class MainViewModelFactory(private val gateway: ReposGateway) : ViewModelProvider.Factory {
+    class MainViewModelFactory(private val useCase: UseCase) :
+        ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (!modelClass.isAssignableFrom(MainViewModel::class.java))
                 throw IllegalArgumentException("Unknown ViewModel class")
 
-            return MainViewModel(gateway) as T
+            return MainViewModel(useCase) as T
         }
     }
 }

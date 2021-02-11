@@ -1,32 +1,29 @@
 package com.why.githubtrendyrepos.viewmodels
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.github.whyrising.y.concretions.map.m
 import com.why.githubtrendyrepos.app.Repo
-import com.why.githubtrendyrepos.app.ReposGateway
+import com.why.githubtrendyrepos.app.Result.Error
 import com.why.githubtrendyrepos.app.Result.Ok
+import com.why.githubtrendyrepos.app.UseCase
 import com.why.githubtrendyrepos.viewmodels.Pages.SETTINGS
 import com.why.githubtrendyrepos.viewmodels.Pages.TRENDING
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.coroutines.flow.Flow
 
-class MainViewModel(private val gateway: ReposGateway) : ViewModel() {
+class MainViewModel(private val useCase: UseCase) : ViewModel() {
 
     private fun defaultItems() = m(
         TRENDING to NavigationItemViewModel(TRENDING, true, ::onSelect),
         SETTINGS to NavigationItemViewModel(SETTINGS, onSelect = ::onSelect)
     )
-
-    val repos = mutableStateListOf<RepoViewModel>()
 
     var isDarkTheme: Boolean by mutableStateOf(false)
         private set
@@ -51,27 +48,43 @@ class MainViewModel(private val gateway: ReposGateway) : ViewModel() {
         isDarkTheme = false
     }
 
-    fun loadRepos() {
-        viewModelScope.launch {
-            val now = Clock.System.now()
-            val creationDate = now
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .date.minus(DatePeriod(days = 30))
+    fun reposPagination(): Flow<PagingData<RepoViewModel>> =
+        Pager<Int, RepoViewModel>(PagingConfig(pageSize = 20)) {
+            ReposPagingSource(useCase)
+        }.flow
 
-            val r = gateway.getMostStaredReposSince(creationDate, 1)
+    class ReposPagingSource(private val useCase: UseCase) :
+        PagingSource<Int, RepoViewModel>() {
+
+        override
+        fun getRefreshKey(state: PagingState<Int, RepoViewModel>): Int? {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun load(
+            params: LoadParams<Int>
+        ): LoadResult<Int, RepoViewModel> {
+            val page = params.key ?: 1
+            val response = useCase.execute(mapOf("page" to page))
+            val repos = response[Ok]
+                ?: return LoadResult.Error(response[Error] as Throwable)
 
             @Suppress("UNCHECKED_CAST")
-            val l = (r[Ok] as List<Repo>).map { repo ->
-                RepoViewModel(
-                    name = repo.name,
-                    description = repo.description,
-                    author = repo.author,
-                    starsCount = repo.starsCount,
-                    authorAvatarUrl = repo.avatarUrl
-                )
-            }
-
-            repos.addAll(l)
+            return LoadResult.Page(
+                data = (repos as List<Repo>).map { toRepoViewModel(it) },
+                prevKey = if (page == 1) null else page - 1,
+                nextKey = page.inc()
+            )
         }
+    }
+
+    companion object {
+        fun toRepoViewModel(repo: Repo) = RepoViewModel(
+            name = repo.name,
+            description = repo.description,
+            author = repo.author,
+            starsCount = repo.starsCount,
+            authorAvatarUrl = repo.avatarUrl
+        )
     }
 }
