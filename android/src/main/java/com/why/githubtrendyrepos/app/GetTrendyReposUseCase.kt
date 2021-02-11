@@ -7,13 +7,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 
-class GetTrendyReposUseCase(private val gateway: ReposGateway) {
+class GetTrendyReposUseCase(private val gateway: ReposGateway) : UseCase {
 
     val repoCreationDate: LocalDate = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date.minus(DatePeriod(days = 30))
 
-    suspend fun execute(request: Map<String, Any>): Map<Result, Any> {
+    override suspend fun execute(request: Map<String, Any>): Map<Result, Any> {
         val page = request["page"] as Int
 
         return gateway.getMostStaredReposSince(repoCreationDate, page)
