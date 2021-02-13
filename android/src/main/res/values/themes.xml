@@ -4,13 +4,11 @@
 
     <style name="Theme.Material.DayNight.NoActionBar" parent="@android:style/Theme.Material.Light.NoActionBar" />
 
-    <!-- TODO : Change the themes' names -->
-    <style name="Theme.Compose.Template" parent="Theme.Material.DayNight.NoActionBar">
-        <!-- TODO : Change the status bar color -->
-        <item name="android:statusBarColor">@color/red_200</item>
+    <style name="Theme.GitHubTrendyRepos" parent="Theme.Material.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/blue_600</item>
     </style>
 
-    <style name="Theme.Compose.Template.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.GitHubTrendyRepos.Splash" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="android:windowFullscreen">true</item>
     </style>

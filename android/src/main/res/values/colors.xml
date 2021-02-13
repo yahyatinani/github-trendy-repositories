@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="red_200">#FFF297A2</color>
+    <color name="blue_600">#019FDE</color>
+
+    <color name="colorPrimaryDark">#005b96</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="black">#000000</color>
+    <color name="color_bottomnav_background">#f7f6f6</color>
+    <color name="color_main_border">#C8C7CC</color>
+    <color name="white">#FFFFFF</color>
 </resources>

@@ -1,9 +1,16 @@
+import Libs.kotlinVersion
+
+repositories {
+    maven(url = "https://kotlin.bintray.com/kotlinx/")
+}
+
 plugins {
     id("com.android.application")
     kotlin("android")
 }
 
 dependencies {
+    implementation(Libs.AndroidX.activityKtx)
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.appcompat)
     implementation(Libs.AndroidX.lifecycle)
@@ -20,11 +27,32 @@ dependencies {
     implementation(Libs.Y.core)
     implementation(Libs.Y.collections)
 
+    implementation(Libs.Kotlinx.coroutines)
+
+    implementation(Libs.Kotlinx.datetime)
+
+    implementation(Libs.Ktor.core)
+    implementation(Libs.Ktor.engine)
+    implementation(Libs.Ktor.gson)
+
+    implementation(Libs.Ktor.mock)
+
+    implementation(Libs.Picasso.picasso)
+
+    implementation(Libs.Paging.copmpose)
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.1")
+
+    debugImplementation(Libs.Compose.uiTooling)
+    debugImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+
     testImplementation(Libs.Kotest.runner)
     testImplementation(Libs.Kotest.assertions)
     testImplementation(Libs.Kotest.property)
 
     testImplementation(Libs.Compose.uiTestJUnit)
+
+    testImplementation(Libs.Kotlinx.coroutinesTest)
 }
 
 android {
@@ -32,8 +60,8 @@ android {
     buildToolsVersion("30.0.3")
 
     defaultConfig {
-        // TODO: Change the applicationId
-        applicationId = "com.why.template.compose"
+        applicationId = "com.why.githubtrendyrepos"
+        multiDexEnabled = true
         minSdkVersion(22)
         targetSdkVersion(30)
         versionCode = 1
@@ -51,8 +79,9 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
@@ -66,7 +95,6 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = Libs.Compose.version
-        kotlinCompilerVersion = Libs.kotlinVersion
     }
 }
 

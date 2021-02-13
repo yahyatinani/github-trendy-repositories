@@ -1,15 +1,16 @@
 object Libs {
-    const val kotlinVersion = "1.4.21"
-    const val jvmTarget = "1.8"
+    const val kotlinVersion = "1.4.21-2"
+    const val jvmTarget = "11"
 
     object Gradle {
         const val plugin =
             "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
-        const val build = "com.android.tools.build:gradle:7.0.0-alpha04"
+        const val build = "com.android.tools.build:gradle:7.0.0-alpha06"
     }
 
     object AndroidX {
+        const val activityKtx = "androidx.activity:activity-ktx:1.2.0-rc01"
         const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
         const val appcompat = "androidx.appcompat:appcompat:1.3.0-beta01"
         const val lifecycle =
@@ -24,7 +25,7 @@ object Libs {
 
     object Compose {
         private const val gr = "androidx.compose"
-        const val version = "1.0.0-alpha10"
+        const val version = "1.0.0-alpha11"
 
         const val ui = "$gr.ui:ui:$version"
 
@@ -46,7 +47,7 @@ object Libs {
     }
 
     object Kotest {
-        private const val version = "4.3.2"
+        private const val version = "4.4.0"
 
         const val runner = "io.kotest:kotest-runner-junit5:$version"
         const val assertions = "io.kotest:kotest-assertions-core:$version"
@@ -59,5 +60,43 @@ object Libs {
 
         const val core = "$group:y-core:$version"
         const val collections = "$group:y-collections:$version"
+    }
+
+    object Kotlinx {
+        private const val id = "org.jetbrains.kotlinx"
+        private const val coroutinesVersion = "1.4.2"
+
+        const val coroutines =
+            "$id:kotlinx-coroutines-android:$coroutinesVersion"
+
+        const val coroutinesTest =
+            "$id:kotlinx-coroutines-test:$coroutinesVersion"
+
+        const val datetime = "$id:kotlinx-datetime:0.1.1"
+    }
+
+    object Ktor {
+
+        private const val version = "1.5.1"
+
+        const val core = "io.ktor:ktor-client-core:version"
+
+        const val engine = "io.ktor:ktor-client-android:$version"
+
+        const val gson = "io.ktor:ktor-client-gson:$version"
+
+        const val mock = "io.ktor:ktor-client-mock:$version"
+    }
+
+    object Picasso {
+        private const val version = "2.8"
+
+        const val picasso = "com.squareup.picasso:picasso:$version"
+    }
+
+    object Paging {
+        private const val version = "1.0.0-alpha06"
+
+        const val copmpose = "androidx.paging:paging-compose:$version"
     }
 }
