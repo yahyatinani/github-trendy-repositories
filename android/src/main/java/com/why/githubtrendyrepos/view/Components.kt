@@ -378,7 +378,6 @@ private fun errorMessage(loadState: LoadState) =
         else -> "Unknown error!"
     }
 
-
 @Composable
 fun Repos(innerPadding: PaddingValues, mainViewModel: MainViewModel) {
     Surface {

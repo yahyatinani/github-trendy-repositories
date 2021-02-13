@@ -1,3 +1,5 @@
+import Libs.kotlinVersion
+
 repositories {
     maven(url = "https://kotlin.bintray.com/kotlinx/")
 }
@@ -40,6 +42,10 @@ dependencies {
     implementation(Libs.Paging.copmpose)
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.1")
+
+    debugImplementation(Libs.Compose.uiTooling)
+    debugImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+
 
     testImplementation(Libs.Kotest.runner)
     testImplementation(Libs.Kotest.assertions)

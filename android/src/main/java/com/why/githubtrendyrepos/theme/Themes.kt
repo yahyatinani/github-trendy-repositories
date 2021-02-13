@@ -44,13 +44,3 @@ fun MyTheme(
         content = content
     )
 }
-
-val greyLightColors = LightColors.copy(
-    primary = Grey100,
-    onPrimary = Grey900,
-)
-
-val greyDarkColors = DarkColors.copy(
-    primary = Grey100,
-    onPrimary = Grey900,
-)
