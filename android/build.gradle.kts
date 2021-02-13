@@ -46,7 +46,6 @@ dependencies {
     debugImplementation(Libs.Compose.uiTooling)
     debugImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
-
     testImplementation(Libs.Kotest.runner)
     testImplementation(Libs.Kotest.assertions)
     testImplementation(Libs.Kotest.property)

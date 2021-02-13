@@ -13,13 +13,18 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldBeSubtypeOf
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.ktor.client.*
-import io.ktor.client.engine.android.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.http.*
-import io.ktor.http.content.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.android.AndroidClientEngine
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.features.feature
+import io.ktor.client.features.json.GsonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.TextContent
+import io.ktor.http.headersOf
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -134,21 +139,22 @@ class ReposGatewayTest : FreeSpec(
     }
 ) {
     companion object {
-        private val reposJson = """
-            {
-                "items": [
-                    {
-                        "name": "RepoName",
-                        "owner": {
-                            "login": "author",
-                            "avatar_url": "https://avatars.github.com"
-                        },
-                        "description": null,
-                        "stargazers_count": 28
-                    }
-                ]
-            }
-        """.trimIndent()
+        private val reposJson =
+            """
+                {
+                    "items": [
+                        {
+                            "name": "RepoName",
+                            "owner": {
+                                "login": "author",
+                                "avatar_url": "https://avatars.github.com"
+                            },
+                            "description": null,
+                            "stargazers_count": 28
+                        }
+                    ]
+                }
+            """.trimIndent()
 
         val httpClientMock = HttpClient(MockEngine) {
             install(JsonFeature) {
@@ -184,7 +190,6 @@ class ReposGatewayTest : FreeSpec(
                             )
                         }
                     }
-
                 }
             }
         }
