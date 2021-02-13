@@ -1,13 +1,13 @@
-Jetpack Compose Template
+GitHub Trendy Repositories
 =========
 
 ![Android CI](https://github.com/whyrising/Jetpack-Compose-Template/workflows/Android%20CI/badge.svg)
 
-*Up-To-Date Android Jetpack Compose template with Kotlin as the build script language.*
+This is an Android Jetpack Compose app that displays the most trending repositories on GitHub in the last 30 days. 
+
+![gif](docs/demo.gif)
 
 #### Dependencies:
-
-* [Kotest](https://kotest.io/) framework for unit tests.
 
 #### MAD SCORECARD:
 
