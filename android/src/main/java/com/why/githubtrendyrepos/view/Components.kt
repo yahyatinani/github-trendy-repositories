@@ -261,28 +261,6 @@ private fun toImageVector(page: Pages): Pair<String, ImageVector> =
         )
     }
 
-@Composable
-private fun NavigationItem(navigationItemVm: NavigationItemViewModel) {
-    val colors = MaterialTheme.colors
-    val (label, icon) = toImageVector(navigationItemVm.page)
-
-    BottomNavigationItem(
-        label = {
-            Text(text = label)
-        },
-        icon = {
-            Icon(icon, contentDescription = null)
-        },
-        selected = navigationItemVm.isSelected,
-        selectedContentColor = colors.secondary,
-        unselectedContentColor = colors.onPrimary.copy(
-            alpha = ContentAlpha.medium
-        ),
-        onClick = {
-            navigationItemVm.select()
-        }
-    )
-}
 
 @Composable
 fun BottomBar(mainVm: MainViewModel) {
@@ -291,7 +269,26 @@ fun BottomBar(mainVm: MainViewModel) {
         BottomNavigation(elevation = 1.dp) {
             mainVm.navigationItems
                 .forEach<Pages, NavigationItemViewModel> { entry ->
-                    NavigationItem(entry.value)
+                    val colors = MaterialTheme.colors
+                    val navigationItemVm = entry.value
+                    val (label, icon) = toImageVector(navigationItemVm.page)
+
+                    BottomNavigationItem(
+                        label = {
+                            Text(text = label)
+                        },
+                        icon = {
+                            Icon(icon, contentDescription = null)
+                        },
+                        selected = navigationItemVm.isSelected,
+                        selectedContentColor = colors.secondary,
+                        unselectedContentColor = colors.onPrimary.copy(
+                            alpha = ContentAlpha.medium
+                        ),
+                        onClick = {
+                            navigationItemVm.select()
+                        }
+                    )
                 }
         }
     }

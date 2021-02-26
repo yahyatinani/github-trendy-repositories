@@ -1,31 +1,10 @@
 object Libs {
-    const val kotlinVersion = "1.4.21-2"
-    const val jvmTarget = "11"
-
-    object Gradle {
-        const val plugin =
-            "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-
-        const val build = "com.android.tools.build:gradle:7.0.0-alpha07"
-    }
-
-    object AndroidX {
-        const val activityKtx = "androidx.activity:activity-ktx:1.2.0-rc01"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0-beta01"
-        const val appcompat = "androidx.appcompat:appcompat:1.3.0-beta01"
-        const val lifecycle =
-            "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-rc01"
-    }
-
-    object AndroidMaterial {
-        private const val version = "1.3.0-rc01"
-
-        const val material = "com.google.android.material:material:$version"
-    }
+    const val kotlinVersion = "1.4.30"
+    const val jvmTarget = "1.8"
 
     object Compose {
         private const val gr = "androidx.compose"
-        const val version = "1.0.0-alpha11"
+        const val version = "1.0.0-beta01"
 
         const val ui = "$gr.ui:ui:$version"
 
@@ -42,12 +21,19 @@ object Libs {
         const val iconsCore = "$gr.material:material-icons-core:$version"
         const val iconsExt = "$gr.material:material-icons-extended:$version"
 
+        // Integration with activities
+        const val activity = "androidx.activity:activity-compose:1.3.0-alpha03"
+
+        // Integration with ViewModels
+        const val viewModels =
+            "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02"
+
         // UI Testing
         const val uiTestJUnit = "$gr.ui:ui-test-junit4:$version"
     }
 
     object Kotest {
-        private const val version = "4.4.0"
+        private const val version = "4.4.1"
 
         const val runner = "io.kotest:kotest-runner-junit5:$version"
         const val assertions = "io.kotest:kotest-assertions-core:$version"
@@ -95,8 +81,8 @@ object Libs {
     }
 
     object Paging {
-        private const val version = "1.0.0-alpha06"
+        private const val version = "1.0.0-alpha08"
 
-        const val copmpose = "androidx.paging:paging-compose:$version"
+        const val compose = "androidx.paging:paging-compose:$version"
     }
 }

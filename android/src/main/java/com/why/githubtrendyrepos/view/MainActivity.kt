@@ -2,8 +2,8 @@ package com.why.githubtrendyrepos.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.ui.platform.setContent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.why.githubtrendyrepos.app.GetTrendyReposUseCase

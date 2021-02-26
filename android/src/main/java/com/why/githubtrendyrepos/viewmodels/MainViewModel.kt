@@ -49,7 +49,7 @@ class MainViewModel(private val useCase: UseCase) : ViewModel() {
     }
 
     fun reposPagination(): Flow<PagingData<RepoViewModel>> =
-        Pager<Int, RepoViewModel>(PagingConfig(pageSize = 20)) {
+        Pager(PagingConfig(pageSize = 20)) {
             ReposPagingSource(useCase)
         }.flow
 

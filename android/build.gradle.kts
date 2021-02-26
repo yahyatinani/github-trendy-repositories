@@ -10,19 +10,14 @@ plugins {
 }
 
 dependencies {
-    implementation(Libs.AndroidX.activityKtx)
-    implementation(Libs.AndroidX.coreKtx)
-    implementation(Libs.AndroidX.appcompat)
-    implementation(Libs.AndroidX.lifecycle)
-
-    implementation(Libs.AndroidMaterial.material)
-
     implementation(Libs.Compose.ui)
     implementation(Libs.Compose.uiTooling)
     implementation(Libs.Compose.foundation)
+    implementation(Libs.Compose.material)
     implementation(Libs.Compose.iconsCore)
     implementation(Libs.Compose.iconsExt)
-    implementation(Libs.Compose.material)
+    implementation(Libs.Compose.activity)
+    implementation(Libs.Compose.viewModels)
 
     implementation(Libs.Y.core)
     implementation(Libs.Y.collections)
@@ -39,9 +34,9 @@ dependencies {
 
     implementation(Libs.Picasso.picasso)
 
-    implementation(Libs.Paging.copmpose)
+    implementation(Libs.Paging.compose)
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     debugImplementation(Libs.Compose.uiTooling)
     debugImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
@@ -80,8 +75,8 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
