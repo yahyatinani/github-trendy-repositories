@@ -261,7 +261,6 @@ private fun toImageVector(page: Pages): Pair<String, ImageVector> =
         )
     }
 
-
 @Composable
 fun BottomBar(mainVm: MainViewModel) {
     Column {
